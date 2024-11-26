@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pandas
+scikit-learn
+xgboost
+pulp
+numpy
+geopandas
+matplotlib
+jinja2
+openpyxl

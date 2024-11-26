@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Prediction and Distribution</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            max-width: 95%;
+            width: 1500px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .input-section, .heatmap-section {
+            flex: 1;
+            padding: 20px;
+        }
+        .input-section {
+            border-right: 1px solid #ddd;
+        }
+        .input-section h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, button:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #ffffff;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button-container2 {
+            align-items: center;
+            margin-top: 20px;
+            margin-left: 30%%;
+        }
+        .button-container button {
+            flex: 1;
+        }
+        .heatmap-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .heatmap-section h3 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .heatmap img {
+            width: 690px;
+            height: 550px; /* Adjust height as needed */
+            object-fit: cover; /* Crop the image to fit the height */
+            object-position: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Input Section -->
+        <div class="input-section">
+            <h2>Energy Prediction And Distribution</h2>
+            
+            <label for="date">Enter Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="energy">Enter Energy (kWh):</label>
+            <input type="number" id="energy" name="energy" placeholder="Energy in kWh" required>
+
+            <div class="button-container">
+                <button id="predictBtn">Predict</button>
+                <button id="distributeBtn">Distribute</button>
+            </div>
+            <div class="button-container2">
+                <button id="downloadBtn" disabled style="width:40%; margin-left:30%;">Download Result</button>
+            </div>
+        </div>
+
+        <!-- Heatmap Section -->
+        <div class="heatmap-section">
+            <h3>Heatmap</h3>
+            <div id="heatmap" class="heatmap">
+                <img id="heatmapImg" src="" alt="Heatmap">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lastAction = ""; // Tracks the last action: "predict" or "distribute"
+
+        document.getElementById("predictBtn").onclick = async function() {
+            const date = document.getElementById("date").value;
+            const energy = document.getElementById("energy").value;
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ date: date, energy: energy })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                const heatmapImg = document.getElementById("heatmapImg");
+                heatmapImg.src = "";  // Clear the previous image
+                heatmapImg.src = result.heatmap_url;
+                document.getElementById("heatmap").style.display = "block";
+
+                lastAction = "predict"; // Set last action
+                document.getElementById("downloadBtn").disabled = false; // Enable download
+            }
+        };
+
+        document.getElementById("distributeBtn").onclick = async function() {
+            const date = document.getElementById("date").value;
+            const energy = document.getElementById("energy").value;
+
+            const response = await fetch("/distribute", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ date: date, energy: energy })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                const heatmapImg = document.getElementById("heatmapImg");
+                heatmapImg.src = "";  // Clear the previous image
+                heatmapImg.src = result.heatmap_url;
+                document.getElementById("heatmap").style.display = "block";
+
+                lastAction = "distribute"; // Set last action
+                document.getElementById("downloadBtn").disabled = false; // Enable download
+            }
+        };
+
+        document.getElementById("downloadBtn").onclick = function() {
+            const action = lastAction;
+            if (action) {
+                window.location.href = `/download/${action}`;
+            }
+        };
+    </script>
+
+</body>
+</html>
