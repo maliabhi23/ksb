@@ -72,4 +72,4 @@ jobs:
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
             docker pull maliabhi23/newimagename:latest
             docker stop newcontainer || true && docker rm newcontainer || true
-            docker run -d -p 80:8501 --name newcontainer maliabhi23/newimagename:latest
+            docker run -d -p 80:8000 --name newcontainer maliabhi23/newimagename:latest
