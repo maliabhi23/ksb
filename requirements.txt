@@ -1,11 +1,9 @@
-fastapi
-uvicorn[standard]
-pandas
-scikit-learn
-xgboost
-pulp
-numpy
-geopandas
-matplotlib
-jinja2
-openpyxl
+streamlit==1.27.2
+pandas==2.2.0
+numpy== 1.26.3
+scikit-learn== 1.5.2
+xgboost==2.1.1
+tensorflow==2.16.1
+matplotlib==3.8.3
+pytest==7.2.2 
+seaborn== 0.13.2 # Add the appropriate version of pytes3t
