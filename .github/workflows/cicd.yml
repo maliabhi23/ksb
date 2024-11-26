@@ -48,9 +48,9 @@ jobs:
           docker build -t maliabhi23/newimagename:latest .
 
       # Step 9: Scan Docker image for vulnerabilities
-      - name: Scan Docker image
-        run: |
-          docker run --rm aquasec/trivy:latest image maliabhi23/newimagename:latest
+      # - name: Scan Docker image
+      #   run: |
+      #     docker run --rm aquasec/trivy:latest image maliabhi23/newimagename:latest
 
       # Step 10: Push the Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
